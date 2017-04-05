@@ -23,10 +23,10 @@
       var myrbrY=0;
       var myrbrMove=1;
       
-      var myrbbY=0;
+      var myrbbY=30;
       var myrbbMove=1;
       
-      var myrbgY=0;
+      var myrbgY=60;
       var myrbgMove=1;
       
       var myfont = new image('imgs/32x32_smr.png');
@@ -131,7 +131,7 @@
         
         myrbb.draw(mycanvas,0,myrbbY,1,0,7,1);
         
-        myrbbY+=myrbbMove * 2.3;
+        myrbbY+=myrbbMove * 2;
         
         if(myrbbY>768-myrbb.img.height)
           myrbbMove=-1;
@@ -140,7 +140,7 @@
 
         myrbg.draw(mycanvas,0,myrbgY,1,0,7,1);
         
-        myrbgY+=myrbgMove * 2.6;
+        myrbgY+=myrbgMove * 2;
         
         if(myrbgY>768-myrbg.img.height)
           myrbgMove=-1;

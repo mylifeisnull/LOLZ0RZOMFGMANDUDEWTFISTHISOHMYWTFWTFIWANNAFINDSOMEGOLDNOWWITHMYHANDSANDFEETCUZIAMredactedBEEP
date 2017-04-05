@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+
+<html> 
+  <head> 
+    
+    <script src="http://codef.santo.fr/codef/codef_core.js"></script> 
+    <script src="http://codef.santo.fr/codef/codef_scrolltext.js"></script> 
+    <script src="http://codef.santo.fr/codef/codef_fx.js"></script> 
+    <script src="http://codef.santo.fr/codef/codef_starfield.js"></script>
+    <script src="http://codef.santo.fr/codef/codef_music.js"></script>
+    <script src="http://codef.santo.fr/codef/codef_3d.js"></script> 
+    <script src="http://codef.namwollem.co.uk/JS/CODEF/codef_2.0amigadecrunch.js"></script> 
+
+    <script> 
+
+      
+      var mybackdrop = new image('http://i.imgur.com/wXOMAGl.png')
+      var mylogo = new image('http://i.imgur.com/jPtdbLb.png')
+      var myrbr=new image('imgs/rbr.png');
+      var myrbb=new image('imgs/rbb.png');
+      var myrbg=new image('imgs/rbg.png');
+      
+      var myrbrY=0;
+      var myrbrMove=1;
+      
+      var myrbbY=0;
+      var myrbbMove=1;
+      
+      var myrbgY=0;
+      var myrbgMove=1;
+      
+      var myfont = new image('imgs/32x32_smr.png');
+      var mycanvas;
+      var myscrolltext;
+      var mystarfield;
+      var myoffscreencanvas;
+      var myfx;
+      var myfxparam=[
+        {value: 0, amp: 20, inc:0.03, offset: -0.05},
+        {value: 0, amp: 20, inc:0.01, offset:  0.08}
+      ];
+      
+      
+      var myscrollparam=[
+        {myvalue: 0, amp: 50, inc:0.2, offset: -0.04},
+      ];
+
+      var my3d;
+      
+      var myobj = new Array();
+      var myobjvert = new Array();
+      myobjvert=[
+        {x:-200, y:0, z: 200},
+        {x: 200, y:0, z: 200},
+        {x: 200, y:0, z: -200},
+        {x:-200, y:0, z: -200},
+        {x:0, y: 300, z: 0},
+        {x:0, y:-300, z: 0},
+      ];
+        
+        myobj=[ 
+        {p1:1, p2:4, p3:0, params:new MeshBasicMaterial({ color: 0xFF0000, opacity:0.7})},
+        {p1:2, p2:4, p3:1, params:new MeshBasicMaterial({ color: 0xeeeeee, opacity:0.7})},
+        {p1:3, p2:4, p3:2, params:new MeshBasicMaterial({ color: 0xFF0000, opacity:0.7})},
+        {p1:0, p2:4, p3:3, params:new MeshBasicMaterial({ color: 0xeeeeee, opacity:0.7})},
+        {p1:0, p2:5, p3:1, params:new MeshBasicMaterial({ color: 0xeeeeee, opacity:0.7})},
+        {p1:1, p2:5, p3:2, params:new MeshBasicMaterial({ color: 0xFF0000, opacity:0.7})},
+        {p1:2, p2:5, p3:3, params:new MeshBasicMaterial({ color: 0xeeeeee, opacity:0.7})},
+        {p1:3, p2:5, p3:0, params:new MeshBasicMaterial({ color: 0xFF0000, opacity:0.7})},
+      ];
+        
+        
+        function init(){
+
+        myAmigaDecrunch = new AmigaDecrunch(280);  // << THIS NUMBER REFERS TO THE LENGTH OF TIME THE DECRUNCH RUNS FOR
+
+
+
+        myoffscreencanvas=new canvas(1024,768); // i dont specify a div to make it hidden ;)
+        myoffscreencanvas.handley = 150;
+        mylogo.sethandle(-150,0); // I draw my logo to my offscreen canvas.
+        mylogo.draw(myoffscreencanvas,0,0,1,0,1,1); // I draw my logo to my offscreen canvas.
+
+        mycanvas=new canvas(1024,768,"main");
+        var audio = new Audio('snd/floppy.mp3');
+		audio.play();
+        do_decruncher();
+        mystarfield=new starfield3D(mycanvas, 500, 2, 1024,400, 320, 240,'#FFFFFF', 100,0,0);
+        myfont.initTile(32,32,0);
+        myscrolltext = new scrolltext_horizontal();
+        myscrolltext.scrtxt="HELLO AND WELCOME TO THIS LITTLE DEMO BY NULL <3       THIS SCROLLTEXT IS MADE USING THE CODEF LIBRARY FOR JS!^P9       GREETZ TO MAGMA, DOMI, KARMIJN, RAINBOW, INOMA, PENGLE, SWAT, GOTTZ, NAVY, VILLIE, ANO, BLADE, NICO, RAZZORD AND WOLFII!^P9                      ";
+        myscrolltext.init(mycanvas,myfont,1,myscrollparam);
+        myfx=new FX(myoffscreencanvas,mycanvas,myfxparam);
+        my3d=new codef3D(mycanvas, 1400, 40, 1, 1600 );
+        my3d.faces(myobjvert,myobj, true, false );
+        }
+
+        function do_decruncher(){
+          if (myAmigaDecrunch.finished == 1){
+                  playmusic();
+                  go();
+            } else {
+                  myAmigaDecrunch.doDecrunch(mycanvas);
+                  requestAnimFrame( do_decruncher );
+          }
+        }
+
+        function playmusic(){
+          var player = new music("MK");
+          //player.stereo(true);
+          player.LoadAndRun('snd/eni.mod');
+        }
+
+        function go(){
+
+        mybackdrop.draw(mycanvas,0,0,1,0,1,0.7)
+
+        my3d.group.rotation.x+=0.01;
+        my3d.group.rotation.y+=0.02;
+        my3d.group.rotation.z+=0.04;
+        my3d.draw();
+
+        myrbr.draw(mycanvas,0,myrbrY,1,0,7,1);
+        
+        myrbrY+=myrbrMove * 2;
+        
+        if(myrbrY>768-myrbr.img.height)
+          myrbrMove=-1;
+        if(myrbrY<0)
+          myrbrMove=1;
+        
+        myrbb.draw(mycanvas,0,myrbbY,1,0,7,1);
+        
+        myrbbY+=myrbbMove * 2.3;
+        
+        if(myrbbY>768-myrbb.img.height)
+          myrbbMove=-1;
+        if(myrbbY<0)
+          myrbbMove=1;
+
+        myrbg.draw(mycanvas,0,myrbgY,1,0,7,1);
+        
+        myrbgY+=myrbgMove * 2.6;
+        
+        if(myrbgY>768-myrbg.img.height)
+          myrbgMove=-1;
+        if(myrbgY<0)
+          myrbgMove=1;
+
+        mystarfield.draw();
+        myscrolltext.draw(240-16);
+        myfx.siny(180,180);
+        requestAnimFrame( go );
+        }
+        
+    </script> 
+  </head> 
+  <body onLoad="init();" style="background-color: rgb(0,0,0);">
+    <center><div id="main"></div><br><br></center>
+  </body> 
+</html>

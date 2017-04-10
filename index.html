@@ -2,18 +2,26 @@
 
 <html> 
   <head> 
-    
+    <script src="https://code.jquery.com/jquery-3.2.0.min.js"></script>
     <script src="js/codef_core.js"></script> 
     <script src="js/codef_scrolltext.js"></script> 
     <script src="js/codef_fx.js"></script> 
     <script src="js/codef_starfield.js"></script>
     <script src="js/codef_music.js"></script>
+    <script src="js/jsSID.js"></script>
     <script src="js/codef_3d.js"></script> 
     <script src="js/codef_2.0amigadecrunch.js"></script> 
 
     <script> 
-
-      
+      var goreq;
+      var go2req;
+      var raster;
+      var XX=96;
+      var YY=64;
+      var mag=8;
+      var moverastY=0;
+      var m1=1;
+      var n1=1;
       var mybackdrop = new image('https://i.imgur.com/wXOMAGl.png')
       var mylogo = new image('imgs/logo.png')
       var myrbr=new image('imgs/rbr.png');
@@ -82,6 +90,7 @@
         mylogo.draw(myoffscreencanvas,0,0,1,0,1,1); // I draw my logo to my offscreen canvas.
 
         mycanvas=new canvas(1024,768,"main");
+        raster=new canvas(1,480);
         var audio = new Audio('snd/floppy.mp3');
     audio.play();
         do_decruncher();
@@ -109,6 +118,7 @@
           var player = new music("MK");
           //player.stereo(true);
           player.LoadAndRun('snd/sc.mod');
+
         }
 
         function go(){
@@ -150,9 +160,35 @@
         mystarfield.draw();
         myscrolltext.draw(240-16);
         myfx.siny(180,180);
-        requestAnimFrame( go );
+        goreq = requestAnimFrame( go );
         }
-        
+
+      $(window).keypress(function(e) {
+        if (e.which === 32) {
+
+          cancelAnimationFrame(goreq);
+          go2();
+
+        }
+
+
+      });
+
+      function do_coppers(){
+        moverastY++;
+        if(moverastY>400) moverastY=0;
+        var copper=0;
+        for(var ci=0;ci<24;ci++){ 
+          if(copper>10) copper+=1;
+          copper++;
+          raster.drawPart(mycanvas,0,ci*20,0,copper+moverastY,1,20,1,0,640,1);
+        }
+      }   
+
+      function go2(){
+        do_coppers();
+        go2req = requestAnimFrame(go2);
+      } 
     </script> 
   </head> 
   <body onLoad="init();" style="background-color: rgb(0,0,0);">
